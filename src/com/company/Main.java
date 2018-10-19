@@ -1,9 +1,16 @@
 package com.company;
 
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args){
+
+
+    public static void main(String[] args) {
 
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
@@ -17,7 +24,6 @@ public class Main {
             String TotalMemory = "wmic ComputerSystem get TotalPhysicalMemory";
             String FreeMemory = "wmic OS get FreePhysicalMemory";
 
-            String PercentProcessorTime = " Powershell \"gwmi Win32_PerfFormattedData_PerfOS_Processor | Select -First 1 | %{'{0}%' -f $_.PercentProcessorTime}\"";
 
 
 
@@ -34,8 +40,26 @@ public class Main {
             String CPU_UsedBySystem = "top -l 1 | grep 'CPU usage': | awk '{print $5}'";
             String CPU_UsedByUser = "top -l 1 | grep 'CPU usage': | awk '{print $3}'";
 
-        } else {
 
+
+            System.out.println("************************************");
+            try {
+                ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", TotalMemory);
+                Process p=pb.start();
+                BufferedReader br=new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while((line=br.readLine())!=null){
+                    System.out.println("Total Memory: "+line);
+                }
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+
+
+
+        } else {
+            String nameOS= System.getProperty("os.name");
+            System.out.println("Operating system: "+ nameOS);
 
         }
     }
